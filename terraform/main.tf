@@ -10,7 +10,16 @@ provider "aws" {
   }
 }
 
+# Génère un identifiant aléatoire à chaque plan Terraform
+resource "random_id" "ami_suffix" {
+  byte_length = 2
+}
+
 resource "aws_instance" "demo" {
-  ami           = "ami-12345678"
+  ami           = "ami-${random_id.ami_suffix.hex}" # change à chaque commit
   instance_type = "t2.micro"
+
+  tags = {
+    Name = "CommitInstance-${random_id.ami_suffix.hex}"
+  }
 }
